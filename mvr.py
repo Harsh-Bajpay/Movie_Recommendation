@@ -12,9 +12,9 @@ if not TMDB_API_KEY:
 BASE_URL = "https://api.themoviedb.org/3"
 SEARCH_URL = f"{BASE_URL}/search/movie"
 
-def search_movie(query):
+def search_movie(query, api_key):  # Accept API key as a parameter
     params = {
-        'api_key': TMDB_API_KEY,
+        'api_key': api_key,  # Use the passed API key
         'query': query
     }
     response = requests.get(SEARCH_URL, params=params)
@@ -24,13 +24,33 @@ def search_movie(query):
         st.error(f"Error fetching data: {response.status_code}")
         return []
 
+def get_movie_suggestions(query, api_key):  # Accept API key as a parameter
+    # Fetch movie suggestions based on the query
+    params = {
+        'api_key': api_key,  # Use the passed API key
+        'query': query
+    }
+    response = requests.get(SEARCH_URL, params=params)
+    if response.status_code == 200:
+        return [movie['title'] for movie in response.json()['results']]
+    else:
+        st.error(f"Error fetching suggestions: {response.status_code}")
+        return []
+
 st.title("Movie Recommendation System")
 st.markdown("**Created by Harsh Bajpay**")
 
-movie_name = st.text_input("Enter a movie name:")
+movie_name = st.text_input("Enter a movie name:", key="movie_search")
 
 if movie_name:
-    movies = search_movie(movie_name)
+    # Fetch suggestions based on the current input
+    suggestions = get_movie_suggestions(movie_name, TMDB_API_KEY)  # Pass API key
+    if suggestions:
+        st.write("Suggestions:")
+        for suggestion in suggestions:
+            st.write(f"- {suggestion}")
+
+    movies = search_movie(movie_name, TMDB_API_KEY)  # Pass API key
     # Filter out movies with missing data
     filtered_movies = [
         movie for movie in movies[:5]

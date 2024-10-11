@@ -1,16 +1,12 @@
 import streamlit as st
 import requests
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # TMDB API configuration
-TMDB_API_KEY = os.environ.get('TMDB_API_KEY'
-                              )
+# Load API key from Streamlit secrets
+TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
 if not TMDB_API_KEY:
-    st.error("TMDB API key not found. Please set the TMDB_API_KEY environment variable.")
+    st.error("TMDB API key not found. Please set the TMDB_API_KEY in your Streamlit secrets.")
     st.stop()
 
 BASE_URL = "https://api.themoviedb.org/3"

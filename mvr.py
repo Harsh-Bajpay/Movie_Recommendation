@@ -4,7 +4,7 @@ import os
 
 # TMDB API configuration
 # Load API key from Streamlit secrets
-TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
+TMDB_API_KEY = st.secrets["TMDB_API_KEY"]  # Ensure this is set in Streamlit secrets
 if not TMDB_API_KEY:
     st.error("TMDB API key not found. Please set the TMDB_API_KEY in your Streamlit secrets.")
     st.stop()

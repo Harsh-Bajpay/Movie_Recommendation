@@ -14,9 +14,9 @@ SEARCH_URL = f"{BASE_URL}/search/movie"
 GENRE_URL = f"{BASE_URL}/genre/movie/list"
 DISCOVER_URL = f"{BASE_URL}/discover/movie"
 
-def search_movie(query, api_key):  # Accept API key as a parameter
+def recommend_movie(query, api_key):  # Changed from search_movie
     params = {
-        'api_key': api_key,  # Use the passed API key
+        'api_key': api_key,
         'query': query
     }
     response = requests.get(SEARCH_URL, params=params)
@@ -26,20 +26,20 @@ def search_movie(query, api_key):  # Accept API key as a parameter
             movie['genre_ids'] = movie.get('genre_ids', [])
         return results
     else:
-        st.error(f"Error fetching data: {response.status_code}")
+        st.error(f"Error fetching recommendations: {response.status_code}")  # Changed error message
         return []
 
-def get_movie_suggestions(query, api_key):  # Accept API key as a parameter
+def get_movie_suggestions(query, api_key):
     # Fetch movie suggestions based on the query
     params = {
-        'api_key': api_key,  # Use the passed API key
+        'api_key': api_key,
         'query': query
     }
     response = requests.get(SEARCH_URL, params=params)
     if response.status_code == 200:
         return [movie['title'] for movie in response.json()['results']]
     else:
-        st.error(f"Error fetching suggestions: {response.status_code}")
+        st.error(f"Error fetching recommendations: {response.status_code}")  # Changed error message
         return []
 
 def get_genres(api_key):
@@ -144,8 +144,8 @@ def get_region_recommendations(api_key, region=None, page=1):
         return response.json().get('results', [])
     return []
 
-def search_person(query, api_key):
-    """Search for an actor/actress"""
+def recommend_person(query, api_key):  # Changed from search_person
+    """Recommend an actor/actress"""  # Updated docstring
     person_search_url = f"{BASE_URL}/search/person"
     params = {
         'api_key': api_key,
@@ -223,7 +223,7 @@ tab_movie, tab_actor, tab_genre = st.tabs([
 # Movie Search Tab
 with tab_movie:
     st.header("Recommend Movies")
-    movie_name = st.text_input("Enter a movie name:", key="movie_search")
+    movie_name = st.text_input("Enter a movie name:", key="movie_recommend")
     
     if movie_name:
         # Apply autocorrection
@@ -232,7 +232,7 @@ with tab_movie:
         if corrected_movie_name != movie_name:
             st.info(f"Recommending for: {corrected_movie_name}")
         
-        movies = search_movie(corrected_movie_name, TMDB_API_KEY)
+        movies = recommend_movie(corrected_movie_name, TMDB_API_KEY)  # Changed function call
         filtered_movies = [
             movie for movie in movies[:5]
             if movie.get('release_date') and movie.get('vote_average') is not None and movie.get('poster_path')
@@ -345,7 +345,7 @@ with tab_movie:
 # Actor Search Tab
 with tab_actor:
     st.header("Recommend by Actor/Actress")
-    actor_name = st.text_input("Enter actor/actress name:", key="actor_search")
+    actor_name = st.text_input("Enter actor/actress name:", key="actor_recommend")  # Changed key
     
     # Store the selected actor ID in session state
     if 'selected_actor_id' not in st.session_state:
@@ -354,14 +354,14 @@ with tab_actor:
         st.session_state.selected_actor_name = None
 
     if actor_name:
-        persons = search_person(actor_name, TMDB_API_KEY)
+        persons = recommend_person(actor_name, TMDB_API_KEY)  # Changed function call
         
         if persons:
             person_options = {f"{person['name']} ({person.get('known_for_department', 'Actor')})": person['id'] 
                              for person in persons[:5]}
             
             selected_person_name = st.selectbox(
-                "Select the correct person:",
+                "Select the person for recommendations:",  # Updated prompt
                 options=list(person_options.keys())
             )
             

@@ -215,14 +215,14 @@ st.markdown("**Created by Harsh Bajpay**")
 
 # Create main navigation tabs
 tab_movie, tab_actor, tab_genre = st.tabs([
-    "🎬 Search by Movie", 
-    "🎭 Search by Actor", 
+    "🎬 Recommend by Movie", 
+    "🎭 Recommend by Actor", 
     "🎪 Browse by Genre"
 ])
 
 # Movie Search Tab
 with tab_movie:
-    st.header("Search Movies")
+    st.header("Recommend Movies")
     movie_name = st.text_input("Enter a movie name:", key="movie_search")
     
     if movie_name:
@@ -230,7 +230,7 @@ with tab_movie:
         corrected_movie_name = autocorrect_movie_name(movie_name, movie_titles)
         
         if corrected_movie_name != movie_name:
-            st.info(f"Searching for: {corrected_movie_name}")
+            st.info(f"Recommending for: {corrected_movie_name}")
         
         movies = search_movie(corrected_movie_name, TMDB_API_KEY)
         filtered_movies = [
@@ -239,8 +239,8 @@ with tab_movie:
         ]
         
         if filtered_movies:
-            # Display original search results
-            st.subheader("Search Results:")
+            # Display original results
+            st.subheader("Recommendations:")
             # Prepare HTML for tabular display
             table_html = "<table style='width:100%;'><tr>"
             table_html += "<th>Image</th><th>Title</th><th>Release Date</th><th>Vote Average</th><th>Vote Count</th><th>Popularity</th><th>Overview</th></tr>"
@@ -344,7 +344,7 @@ with tab_movie:
 
 # Actor Search Tab
 with tab_actor:
-    st.header("Search by Actor/Actress")
+    st.header("Recommend by Actor/Actress")
     actor_name = st.text_input("Enter actor/actress name:", key="actor_search")
     
     # Store the selected actor ID in session state

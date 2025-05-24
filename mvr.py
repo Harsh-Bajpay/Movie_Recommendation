@@ -211,7 +211,7 @@ def get_cached_movie_titles():
 movie_titles = get_cached_movie_titles()
 
 st.title("Movie Recommendation System")
-st.markdown("**Created by Harsh Bajpay**")
+st.markdown("**Created by Lovely**")
 
 # Create main navigation tabs
 tab_movie, tab_actor, tab_genre = st.tabs([
